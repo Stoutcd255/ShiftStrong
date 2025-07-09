@@ -1,0 +1,37 @@
+{
+  "name": "shiftstrong",
+  "version": "1.0.0",
+  "description": "Tactical Fitness & Macro Tracker for First Responders",
+  "main": "main.js",
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "start": "concurrently \"npm:serve\" \"electron .\"",
+    "serve": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "copy:build": "xcopy /Y /E /I dist\\* .\\",
+    "build:electron": "npm run build && npm run copy:build && electron-packager . ShiftStrong --platform=win32 --arch=x64 --out=dist --overwrite --icon=assets/all_badge.ico --prune=true --ignore=\"node_modules/electron\"",
+    "dev": "concurrently \"webpack --mode development --watch\" \"electron .\""
+  },
+  "dependencies": {
+    "dotenv": "^17.0.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-icons": "^5.5.0",
+    "recharts": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.0",
+    "@babel/preset-env": "^7.18.0",
+    "@babel/preset-react": "^7.18.6",
+    "babel-loader": "^8.2.5",
+    "concurrently": "^7.0.0",
+    "css-loader": "^6.7.1",
+    "electron": "^29.0.0",
+    "electron-packager": "^17.1.2",
+    "file-loader": "^6.2.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
+  }
+}

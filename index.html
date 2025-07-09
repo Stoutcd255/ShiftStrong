@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>ShiftStrong – Tactical Fitness & Macro Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tactical Fitness and Macro Tracking for First Responders, Military, and Dispatch. Built rugged for the strong.">
+  <link rel="icon" type="image/x-icon" href="assets/all_badge.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/all_badge.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/all_badge.png" />
+
+  <!-- Google Fonts: Oswald, Montserrat, Roboto Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Montserrat:wght@700;900&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      min-height: 100%;
+      background: linear-gradient(120deg, #1a223d 65%, #2b85d3 110%);
+      color: #fff;
+      font-family: 'Oswald', 'Montserrat', 'Roboto Mono', Arial, sans-serif;
+      letter-spacing: .04em;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    #root {
+      min-height: 100vh;
+      min-width: 100vw;
+    }
+    /* Prevent highlight tap blue on mobile */
+    * {
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <noscript>
+      <div style="margin:64px auto;max-width:460px;font-size:2em;color:#fff;background:#1a223d;padding:2em 1em;border-radius:18px;">
+        🚨 <b>ShiftStrong requires JavaScript</b><br/><br/>
+        Please enable JavaScript to use this tactical app.
+      </div>
+    </noscript>
+  </div>
+  <!-- Your bundle is injected by Webpack/Electron -->
+  <script src="renderer.bundle.js"></script>
+</body>
+</html>
