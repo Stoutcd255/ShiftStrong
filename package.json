@@ -3,15 +3,23 @@
   "version": "1.0.0",
   "description": "Tactical Fitness & Macro Tracker for First Responders",
   "main": "main.js",
-  "author": "Your Name",
+  "author": "ShiftStrong Team",
   "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/ShiftStrong.git"
+  },
+  "homepage": "https://github.com/your-org/ShiftStrong",
+  "bugs": {
+    "url": "https://github.com/your-org/ShiftStrong/issues"
+  },
   "scripts": {
     "start": "concurrently \"npm:serve\" \"electron .\"",
     "serve": "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "copy:build": "xcopy /Y /E /I dist\\* .\\",
-    "build:electron": "npm run build && npm run copy:build && electron-packager . ShiftStrong --platform=win32 --arch=x64 --out=dist --overwrite --icon=assets/all_badge.ico --prune=true --ignore=\"node_modules/electron\"",
-    "dev": "concurrently \"webpack --mode development --watch\" \"electron .\""
+    "dev": "concurrently \"webpack --mode development --watch\" \"electron .\"",
+    "package:win": "npm run build && electron-packager . ShiftStrong --platform=win32 --arch=x64 --out=dist/win --overwrite --icon=assets/all_badge.ico"
   },
   "dependencies": {
     "dotenv": "^17.0.1",

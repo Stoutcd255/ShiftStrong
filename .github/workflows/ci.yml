@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, work ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run production build
+        run: npm run build
+
+      - name: Upload renderer bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: renderer-bundle
+          path: |
+            dist/
+            renderer.bundle.js
+            renderer.bundle.js.map
+          if-no-files-found: warn

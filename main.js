@@ -6,17 +6,24 @@ function isPackaged() {
   // When packaged, process.resourcesPath points to resources/
   // App is unpacked in resources/app/
   // __dirname is .../resources/app/
-  return app.isPackaged || process.mainModule.filename.indexOf('app.asar') !== -1 || __dirname.includes('app');
+  const mainModule = process.mainModule;
+  const isAsar = Boolean(mainModule && typeof mainModule.filename === 'string' && mainModule.filename.includes('app.asar'));
+
+  return Boolean(app.isPackaged || isAsar || __dirname.includes('app'));
 }
 
 function getHtmlPath() {
   if (isPackaged()) {
     // Packaged: index.html is at app root (resources/app/index.html)
     return path.join(__dirname, 'index.html');
-  } else {
-    // Dev: load from dist/
-    return path.join(__dirname, 'dist', 'index.html');
   }
+
+  const distIndex = path.join(__dirname, 'dist', 'index.html');
+  if (fs.existsSync(distIndex)) {
+    return distIndex;
+  }
+
+  return path.join(__dirname, 'index.html');
 }
 
 function createWindow () {
