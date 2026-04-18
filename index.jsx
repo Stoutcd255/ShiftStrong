@@ -896,6 +896,7 @@ function App() {
                 />
               </label>
               <ul className="data-list compact">
+                {filteredMacroExamples.length === 0 && <li>No macro examples match your search.</li>}
                 {filteredMacroExamples.slice(0, 150).map((example) => (
                   <li key={example.id}>
                     <span>{example.plan}</span>
@@ -1186,6 +1187,7 @@ function App() {
               />
             </label>
             <div className="lift-grid">
+              {filteredLiftExamples.length === 0 && <p>No lifting examples match your search.</p>}
               {filteredLiftExamples.slice(0, 200).map((lift) => (
                 <article key={lift.name} className="lift-card">
                   <h3>{lift.name}</h3>
