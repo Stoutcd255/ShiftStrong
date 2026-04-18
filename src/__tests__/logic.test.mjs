@@ -9,6 +9,7 @@ import {
   isValidTime,
   macroExamples,
   liftExamples,
+  tabs,
 } from '../lib/logic.js';
 
 test('normalizeState filters invalid weight entries', () => {
@@ -61,6 +62,10 @@ test('isValidDate and isValidTime enforce real calendar/time values', () => {
 test('expands macro and lifting examples by 25x', () => {
   assert.equal(macroExamples.length, 150);
   assert.equal(liftExamples.length, 150);
+});
+
+test('tabs include AI Coach section', () => {
+  assert.ok(tabs.some((tab) => tab.id === 'ai-coach'));
 });
 
 test('loadState returns normalized defaults when primary storage is malformed', () => {

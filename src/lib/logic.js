@@ -11,6 +11,7 @@ export const tabs = [
   { id: 'workouts', label: 'Workout Planner' },
   { id: 'nutrition', label: 'Meal Builder' },
   { id: 'intel', label: 'Intel + Trends' },
+  { id: 'ai-coach', label: 'AI Coach' },
   { id: 'lift-examples', label: 'Lift Examples' },
 ];
 

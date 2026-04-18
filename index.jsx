@@ -13,6 +13,7 @@ import {
   Bar,
 } from 'recharts';
 import './styles.css';
+import AICoachPanel from './src/components/AICoachPanel';
 import LiftExamplesPanel from './src/components/LiftExamplesPanel';
 import MacroExamplesPanel from './src/components/MacroExamplesPanel';
 
@@ -81,6 +82,11 @@ function App() {
   const [desktopAlertsEnabled, setDesktopAlertsEnabled] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState('');
   const [cloudSyncAt, setCloudSyncAt] = useState('');
+  const [aiMessages, setAiMessages] = useState([
+    { role: 'assistant', content: 'I am your ShiftStrong AI Coach. Ask for workouts, macros, recovery, or weekly planning.' },
+  ]);
+  const [aiInput, setAiInput] = useState('');
+  const [aiBusy, setAiBusy] = useState(false);
 
   const fullState = useMemo(
     () => ({
@@ -228,6 +234,48 @@ function App() {
       sessionPct: ratio(workouts.length, goals.sessionsPerWeek),
     };
   }, [goals, todayTotals, workouts.length]);
+
+  const aiContext = useMemo(
+    () => ({
+      date: FALLBACK_DATE(),
+      readinessScore,
+      intensityGuidance,
+      latestWeight: weightLogs[0]?.weight ?? null,
+      todayTotals,
+      goals,
+      workouts: workouts.slice(0, 5),
+      lifts: exerciseLogs.slice(0, 10),
+    }),
+    [exerciseLogs, goals, intensityGuidance, readinessScore, todayTotals, weightLogs, workouts]
+  );
+
+  const askAssistant = useCallback(async () => {
+    const message = aiInput.trim();
+    if (!message || aiBusy) return;
+
+    setAiMessages((prev) => [...prev, { role: 'user', content: message }]);
+    setAiInput('');
+    setAiBusy(true);
+
+    try {
+      if (!window.shiftStrong?.askAssistant) {
+        setAiMessages((prev) => [...prev, { role: 'assistant', content: 'AI bridge is unavailable. Check preload configuration.' }]);
+        return;
+      }
+
+      const result = await window.shiftStrong.askAssistant({ message, context: aiContext });
+      if (!result?.ok) {
+        setAiMessages((prev) => [...prev, { role: 'assistant', content: result?.error || 'Assistant request failed.' }]);
+        return;
+      }
+
+      setAiMessages((prev) => [...prev, { role: 'assistant', content: result.answer }]);
+    } catch (error) {
+      setAiMessages((prev) => [...prev, { role: 'assistant', content: `Assistant error: ${error.message}` }]);
+    } finally {
+      setAiBusy(false);
+    }
+  }, [aiBusy, aiContext, aiInput]);
 
   const trendData = useMemo(() => {
     const byDate = new Map();
@@ -1150,6 +1198,17 @@ function App() {
               </ul>
             </article>
           </section>
+        )}
+
+        {activeTab === 'ai-coach' && (
+          <AICoachPanel
+            aiMessages={aiMessages}
+            aiInput={aiInput}
+            setAiInput={setAiInput}
+            aiBusy={aiBusy}
+            askAssistant={askAssistant}
+            aiContext={aiContext}
+          />
         )}
 
         {activeTab === 'lift-examples' && (
