@@ -6,13 +6,15 @@
   "author": "Your Name",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"npm:serve\" \"electron .\"",
+    "start": "npm run dev",
     "serve": "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "copy:build": "xcopy /Y /E /I dist\\* .\\",
-    "build:electron": "npm run build && npm run copy:build && electron-packager . ShiftStrong --platform=win32 --arch=x64 --out=dist --overwrite --icon=assets/all_badge.ico --prune=true --ignore=\"node_modules/electron\"",
-    "dev": "concurrently \"webpack --mode development --watch\" \"electron .\"",
-    "test": "node --test src/__tests__/logic.test.mjs"
+    "dev": "concurrently \"npm:dev:renderer\" \"electron .\"",
+    "test": "node --test src/__tests__/logic.test.mjs",
+    "build:renderer": "webpack --mode production",
+    "dev:renderer": "webpack --mode development --watch",
+    "dist:win": "npm run build:renderer && electron-packager . ShiftStrong --platform=win32 --arch=x64 --out=release --overwrite --prune=true --ignore=\"^/release$\"",
+    "dist:portable": "npm run dist:win"
   },
   "dependencies": {
     "dotenv": "^17.0.1",

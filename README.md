@@ -1,57 +1,63 @@
-# ShiftStrong (Windows Setup + Run Guide)
+# ShiftStrong (Windows EXE Launch Guide)
 
-ShiftStrong is a tactical workout + macro tracker desktop app (Electron + React).
+ShiftStrong is a tactical workout + macro tracker desktop app built with Electron + React.
 
-## Features in this build
-- Weight, macro, workout, exercise, meal, and readiness tracking.
-- Auto-programming, progression suggestions, trends, anomaly checks.
-- Local persistence with backup + mirror restore paths.
-- Splash screen and tactical UI theme.
+## Goal: launch from a `.exe`
+This project now packages a Windows build that includes a native app executable:
 
-## 1) Prerequisites (Windows)
-1. Install **Node.js 20+** (LTS recommended): https://nodejs.org
-2. Open **PowerShell**.
-3. Verify tools:
-   ```powershell
-   node -v
-   npm -v
-   ```
+- `release/ShiftStrong-win32-x64/ShiftStrong.exe`
+
+You can double-click that `.exe` to launch the app.
+
+---
+
+## 1) Install prerequisites
+1. Install **Node.js 20+ (LTS)**: https://nodejs.org
+2. Open **PowerShell** in this project folder.
 
 ## 2) Install dependencies
-From the project root folder:
 ```powershell
 npm install
 ```
 
-## 3) Run tests (recommended)
+## 3) Validate the app
 ```powershell
 npm test
+npm run build:renderer
 ```
 
-## 4) Build renderer bundle
+## 4) Build the Windows app package (contains .exe)
 ```powershell
-npm run build
+npm run dist:win
 ```
 
-## 5) Run app in development
+Output folder:
+- `release/ShiftStrong-win32-x64/`
+
+Launch file:
+- `release/ShiftStrong-win32-x64/ShiftStrong.exe`
+
+---
+
+## Developer mode (live app)
 ```powershell
 npm run dev
 ```
-This starts webpack watch + Electron together.
 
-## 6) Create Windows distributable build
-```powershell
-npm run build:electron
-```
-Output is written to `dist/`.
+## Step-by-step for end users
+1. Copy the entire `ShiftStrong-win32-x64` folder to the target PC.
+2. Open folder.
+3. Double-click `ShiftStrong.exe`.
+4. (Optional) Right-click `ShiftStrong.exe` → **Send to > Desktop (create shortcut)**.
 
-## 7) Data backup + restore in app
-Inside the app UI:
-- **Export Backup** creates a JSON snapshot.
-- **Import Backup** restores from a JSON file.
-- **Sync Mirror / Restore Mirror** use local mirror storage for recovery.
+---
 
 ## Troubleshooting
-- If Electron window is blank, run `npm run build` first.
-- If install fails, delete `node_modules` and `package-lock.json`, then `npm install` again.
-- If data looks corrupted, use **Restore Mirror** or re-import a backup JSON.
+- If packaging fails, run:
+  ```powershell
+  npm install
+  npm run build:renderer
+  npm run dist:win
+  ```
+- If app window is blank, run `npm run build:renderer` and launch again.
+- If antivirus prompts on unsigned binaries, sign the executable for production distribution.
