@@ -55,7 +55,7 @@ export const defaultState = {
   ],
 };
 
-export const liftExamples = [
+const liftExampleSeeds = [
   { name: 'Back Squat', focus: 'Power', cue: 'Brace hard, root your feet, and drive up with control.' },
   { name: 'Bench Press', focus: 'Upper Body', cue: 'Pin shoulder blades down, keep wrists stacked, explode up.' },
   { name: 'Deadlift', focus: 'Posterior Chain', cue: 'Pull slack, squeeze lats, push floor away every rep.' },
@@ -63,6 +63,54 @@ export const liftExamples = [
   { name: 'Barbell Row', focus: 'Back Strength', cue: 'Hinge stable, pull elbows to pockets, pause at top.' },
   { name: 'Bulgarian Split Squat', focus: 'Single-Leg Stability', cue: 'Stay tall, own the bottom, drive through front heel.' },
 ];
+
+const trainingBlocks = [
+  'Hypertrophy Block',
+  'Strength Block',
+  'Peak Block',
+  'Deload Block',
+  'Conditioning Block',
+];
+
+export const liftExamples = Array.from({ length: 25 }, (_, idx) => {
+  const block = trainingBlocks[idx % trainingBlocks.length];
+  const intensity = 60 + (idx % 6) * 5;
+  const repRange = [5, 6, 8, 10, 12][idx % 5];
+
+  return liftExampleSeeds.map((lift) => ({
+    name: `${lift.name} • ${block} W${idx + 1}`,
+    focus: `${lift.focus} | ${intensity}% effort`,
+    cue: `${lift.cue} Suggested scheme: ${4 + (idx % 2)}x${repRange}.`,
+  }));
+}).flat();
+
+const macroExampleSeeds = [
+  { plan: 'Cutting Day', protein: 210, carbs: 170, fats: 55 },
+  { plan: 'Maintenance Day', protein: 190, carbs: 230, fats: 70 },
+  { plan: 'High Output Day', protein: 200, carbs: 300, fats: 65 },
+  { plan: 'Night Shift Recovery', protein: 195, carbs: 200, fats: 75 },
+  { plan: 'Low Carb Day', protein: 220, carbs: 130, fats: 85 },
+  { plan: 'Deload Day', protein: 180, carbs: 180, fats: 70 },
+];
+
+export const macroExamples = Array.from({ length: 25 }, (_, idx) => {
+  const delta = (idx % 5) * 10;
+  return macroExampleSeeds.map((seed) => {
+    const protein = Math.max(120, seed.protein + (idx % 2 === 0 ? delta : -delta));
+    const carbs = Math.max(80, seed.carbs + ((idx + 2) % 3 === 0 ? 20 : -10));
+    const fats = Math.max(40, seed.fats + ((idx + 1) % 4 === 0 ? 8 : -4));
+    const calories = protein * 4 + carbs * 4 + fats * 9;
+
+    return {
+      id: `macro-example-${idx + 1}-${seed.plan.replace(/\s+/g, '-').toLowerCase()}`,
+      plan: `${seed.plan} • Cycle ${idx + 1}`,
+      protein,
+      carbs,
+      fats,
+      calories,
+    };
+  });
+}).flat();
 
 export const toNumber = (value) => {
   const parsed = Number(value);

@@ -26,9 +26,9 @@ import {
   isValidDate,
   isValidTime,
   liftExamples,
+  macroExamples,
   loadState,
   newId,
-  normalizeState,
   tabs,
   toNumber,
 } from './src/lib/logic';
@@ -70,6 +70,8 @@ function App() {
   const [mealForm, setMealForm] = useState({ date: FALLBACK_DATE(), foodId: '', servings: '1' });
   const [readinessForm, setReadinessForm] = useState({ date: FALLBACK_DATE(), sleep: '7.5', soreness: '4', stress: '4', restingHR: '62' });
   const [reminderForm, setReminderForm] = useState({ time: '08:00', message: '' });
+  const [macroExampleQuery, setMacroExampleQuery] = useState('');
+  const [liftExampleQuery, setLiftExampleQuery] = useState('');
 
   const [notice, setNotice] = useState(loaded.recoveredFromBackup ? 'Recovered data from backup snapshot.' : '');
   const [saveError, setSaveError] = useState('');
@@ -679,6 +681,22 @@ function App() {
 
   const recommendedLoadList = progressionSuggestions.slice(0, 8);
 
+  const filteredMacroExamples = useMemo(() => {
+    const query = macroExampleQuery.trim().toLowerCase();
+    if (!query) return macroExamples;
+    return macroExamples.filter((example) => example.plan.toLowerCase().includes(query));
+  }, [macroExampleQuery]);
+
+  const filteredLiftExamples = useMemo(() => {
+    const query = liftExampleQuery.trim().toLowerCase();
+    if (!query) return liftExamples;
+    return liftExamples.filter((example) =>
+      example.name.toLowerCase().includes(query) ||
+      example.focus.toLowerCase().includes(query) ||
+      example.cue.toLowerCase().includes(query)
+    );
+  }, [liftExampleQuery]);
+
   if (showSplash) {
     return (
       <div className="splash-screen">
@@ -859,6 +877,41 @@ function App() {
                       <strong>{entry.protein}P/{entry.carbs}C/{entry.fats}F • {entry.calories} cal</strong>
                       <button className="ghost-btn" type="button" onClick={() => editMacroEntry(entry)}>Edit</button>
                       <button className="ghost-btn" type="button" onClick={() => removeItemWithUndo('macro', entry.id)}>Delete</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </article>
+
+
+            <article className="card full-width">
+              <h2>Macro Examples ({filteredMacroExamples.length})</h2>
+              <label>
+                Search Macro Examples
+                <input
+                  type="text"
+                  placeholder="Search by plan name"
+                  value={macroExampleQuery}
+                  onChange={(e) => setMacroExampleQuery(e.target.value)}
+                />
+              </label>
+              <ul className="data-list compact">
+                {filteredMacroExamples.slice(0, 150).map((example) => (
+                  <li key={example.id}>
+                    <span>{example.plan}</span>
+                    <div className="inline-actions">
+                      <strong>{example.protein}P/{example.carbs}C/{example.fats}F • {example.calories} cal</strong>
+                      <button
+                        type="button"
+                        className="ghost-btn"
+                        onClick={() => {
+                          setMacros({ protein: String(example.protein), carbs: String(example.carbs), fats: String(example.fats) });
+                          setActiveTab('macro');
+                          setNotice(`Applied macro example: ${example.plan}`);
+                        }}
+                      >
+                        Apply
+                      </button>
                     </div>
                   </li>
                 ))}
@@ -1122,9 +1175,18 @@ function App() {
 
         {activeTab === 'lift-examples' && (
           <section className="card">
-            <h2>Lifting Examples + Tactical Cues</h2>
+            <h2>Lifting Examples + Tactical Cues ({filteredLiftExamples.length})</h2>
+            <label>
+              Search Lifting Examples
+              <input
+                type="text"
+                placeholder="Search lift name, focus, or cue"
+                value={liftExampleQuery}
+                onChange={(e) => setLiftExampleQuery(e.target.value)}
+              />
+            </label>
             <div className="lift-grid">
-              {liftExamples.map((lift) => (
+              {filteredLiftExamples.slice(0, 200).map((lift) => (
                 <article key={lift.name} className="lift-card">
                   <h3>{lift.name}</h3>
                   <p><strong>Focus:</strong> {lift.focus}</p>

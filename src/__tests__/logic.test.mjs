@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeState, getReadinessScore, deserializeEnvelope } from '../lib/logic.js';
+import { normalizeState, getReadinessScore, deserializeEnvelope, macroExamples, liftExamples } from '../lib/logic.js';
 
 test('normalizeState filters invalid weight entries', () => {
   const state = normalizeState({
@@ -34,4 +34,10 @@ test('getReadinessScore returns bounded positive score', () => {
 
   const lowScore = getReadinessScore({ sleep: 2, soreness: 9, stress: 9, restingHR: 92 });
   assert.ok(lowScore < score);
+});
+
+
+test('expands macro and lifting examples by 25x', () => {
+  assert.equal(macroExamples.length, 150);
+  assert.equal(liftExamples.length, 150);
 });
