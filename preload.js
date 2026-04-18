@@ -1,4 +1,6 @@
-// You can expose any Node APIs to renderer here if needed
-window.addEventListener('DOMContentLoaded', () => {
-  // No-op for now, extend as needed!
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('shiftStrong', {
+  version: '1.0.0',
+  askAssistant: (payload) => ipcRenderer.invoke('assistant:ask', payload),
 });
