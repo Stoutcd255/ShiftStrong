@@ -117,8 +117,14 @@ export const toNumber = (value) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-export const isValidDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value);
-export const isValidTime = (value) => /^\d{2}:\d{2}$/.test(value);
+export const isValidDate = (value) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+};
+
+export const isValidTime = (value) => /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
 
 export const newId = () => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -246,8 +252,12 @@ export function normalizeState(raw) {
 }
 
 export function deserializeEnvelope(rawText) {
-  const parsed = JSON.parse(rawText);
-  return normalizeState(parsed?.state ?? parsed);
+  try {
+    const parsed = JSON.parse(rawText);
+    return normalizeState(parsed?.state ?? parsed);
+  } catch {
+    return normalizeState(defaultState);
+  }
 }
 
 export function loadState() {

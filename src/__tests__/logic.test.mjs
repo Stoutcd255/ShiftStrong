@@ -1,6 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeState, getReadinessScore, deserializeEnvelope, macroExamples, liftExamples } from '../lib/logic.js';
+import {
+  normalizeState,
+  getReadinessScore,
+  deserializeEnvelope,
+  loadState,
+  isValidDate,
+  isValidTime,
+  macroExamples,
+  liftExamples,
+} from '../lib/logic.js';
 
 test('normalizeState filters invalid weight entries', () => {
   const state = normalizeState({
@@ -28,6 +37,12 @@ test('deserializeEnvelope supports wrapped state payload', () => {
   assert.equal(state.macroLogs[0].calories, 2310);
 });
 
+test('deserializeEnvelope returns safe defaults for malformed json', () => {
+  const state = deserializeEnvelope('{"broken":');
+  assert.ok(Array.isArray(state.weightLogs));
+  assert.ok(Array.isArray(state.workouts));
+});
+
 test('getReadinessScore returns bounded positive score', () => {
   const score = getReadinessScore({ sleep: 8, soreness: 3, stress: 3, restingHR: 56 });
   assert.ok(score >= 80);
@@ -36,8 +51,36 @@ test('getReadinessScore returns bounded positive score', () => {
   assert.ok(lowScore < score);
 });
 
+test('isValidDate and isValidTime enforce real calendar/time values', () => {
+  assert.equal(isValidDate('2026-02-28'), true);
+  assert.equal(isValidDate('2026-02-30'), false);
+  assert.equal(isValidTime('09:30'), true);
+  assert.equal(isValidTime('24:15'), false);
+});
 
 test('expands macro and lifting examples by 25x', () => {
   assert.equal(macroExamples.length, 150);
   assert.equal(liftExamples.length, 150);
+});
+
+test('loadState returns normalized defaults when primary storage is malformed', () => {
+  const mainPayload = '{"corrupt":';
+  const backupPayload = JSON.stringify({
+    state: {
+      macroLogs: [{ id: 'm2', date: '2026-04-02', protein: 180, carbs: 210, fats: 60 }],
+    },
+  });
+
+  global.window = {
+    localStorage: {
+      getItem(key) {
+        if (key.includes('backup')) return backupPayload;
+        return mainPayload;
+      },
+    },
+  };
+
+  const loaded = loadState();
+  assert.equal(loaded.recoveredFromBackup, false);
+  assert.equal(loaded.state.macroLogs.length, 0);
 });

@@ -8,7 +8,7 @@
   "scripts": {
     "start": "npm run dev",
     "serve": "webpack --mode development --watch",
-    "build": "webpack --mode production",
+    "build": "npm run build:renderer",
     "dev": "concurrently \"npm:dev:renderer\" \"electron .\"",
     "test": "node --test src/__tests__/logic.test.mjs",
     "build:renderer": "webpack --mode production",

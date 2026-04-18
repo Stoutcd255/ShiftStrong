@@ -26,6 +26,8 @@ npm test
 npm run build:renderer
 ```
 
+> `npm run build` is an alias for `npm run build:renderer`.
+
 ## 4) Build the Windows app package (contains .exe)
 ```powershell
 npm run dist:win
@@ -43,6 +45,11 @@ Launch file:
 ```powershell
 npm run dev
 ```
+
+## Security defaults
+- Electron now runs the renderer with `contextIsolation: true`.
+- `nodeIntegration` is disabled in the renderer.
+- `preload.js` is used as the only bridge boundary for renderer-exposed APIs.
 
 ## Step-by-step for end users
 1. Copy the entire `ShiftStrong-win32-x64` folder to the target PC.

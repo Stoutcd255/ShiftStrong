@@ -13,6 +13,8 @@ import {
   Bar,
 } from 'recharts';
 import './styles.css';
+import LiftExamplesPanel from './src/components/LiftExamplesPanel';
+import MacroExamplesPanel from './src/components/MacroExamplesPanel';
 
 import {
   CLOUD_MIRROR_KEY,
@@ -884,40 +886,16 @@ function App() {
             </article>
 
 
-            <article className="card full-width">
-              <h2>Macro Examples ({filteredMacroExamples.length})</h2>
-              <label>
-                Search Macro Examples
-                <input
-                  type="text"
-                  placeholder="Search by plan name"
-                  value={macroExampleQuery}
-                  onChange={(e) => setMacroExampleQuery(e.target.value)}
-                />
-              </label>
-              <ul className="data-list compact">
-                {filteredMacroExamples.length === 0 && <li>No macro examples match your search.</li>}
-                {filteredMacroExamples.slice(0, 150).map((example) => (
-                  <li key={example.id}>
-                    <span>{example.plan}</span>
-                    <div className="inline-actions">
-                      <strong>{example.protein}P/{example.carbs}C/{example.fats}F • {example.calories} cal</strong>
-                      <button
-                        type="button"
-                        className="ghost-btn"
-                        onClick={() => {
-                          setMacros({ protein: String(example.protein), carbs: String(example.carbs), fats: String(example.fats) });
-                          setActiveTab('macro');
-                          setNotice(`Applied macro example: ${example.plan}`);
-                        }}
-                      >
-                        Apply
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </article>
+            <MacroExamplesPanel
+              filteredMacroExamples={filteredMacroExamples}
+              macroExampleQuery={macroExampleQuery}
+              setMacroExampleQuery={setMacroExampleQuery}
+              applyMacroExample={(example) => {
+                setMacros({ protein: String(example.protein), carbs: String(example.carbs), fats: String(example.fats) });
+                setActiveTab('macro');
+                setNotice(`Applied macro example: ${example.plan}`);
+              }}
+            />
           </section>
         )}
 
@@ -1175,28 +1153,11 @@ function App() {
         )}
 
         {activeTab === 'lift-examples' && (
-          <section className="card">
-            <h2>Lifting Examples + Tactical Cues ({filteredLiftExamples.length})</h2>
-            <label>
-              Search Lifting Examples
-              <input
-                type="text"
-                placeholder="Search lift name, focus, or cue"
-                value={liftExampleQuery}
-                onChange={(e) => setLiftExampleQuery(e.target.value)}
-              />
-            </label>
-            <div className="lift-grid">
-              {filteredLiftExamples.length === 0 && <p>No lifting examples match your search.</p>}
-              {filteredLiftExamples.slice(0, 200).map((lift) => (
-                <article key={lift.name} className="lift-card">
-                  <h3>{lift.name}</h3>
-                  <p><strong>Focus:</strong> {lift.focus}</p>
-                  <p><strong>Cue:</strong> {lift.cue}</p>
-                </article>
-              ))}
-            </div>
-          </section>
+          <LiftExamplesPanel
+            filteredLiftExamples={filteredLiftExamples}
+            liftExampleQuery={liftExampleQuery}
+            setLiftExampleQuery={setLiftExampleQuery}
+          />
         )}
       </main>
     </div>
