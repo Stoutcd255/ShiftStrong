@@ -6,15 +6,45 @@
   "author": "Your Name",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"npm:serve\" \"electron .\"",
+    "start": "npm run dev",
     "serve": "webpack --mode development --watch",
-    "build": "webpack --mode production",
-    "copy:build": "xcopy /Y /E /I dist\\* .\\",
-    "build:electron": "npm run build && npm run copy:build && electron-packager . ShiftStrong --platform=win32 --arch=x64 --out=dist --overwrite --icon=assets/all_badge.ico --prune=true --ignore=\"node_modules/electron\"",
-    "dev": "concurrently \"webpack --mode development --watch\" \"electron .\""
+    "build": "npm run build:renderer",
+    "dev": "concurrently \"npm:dev:renderer\" \"electron .\"",
+    "test": "node --test src/__tests__/logic.test.mjs",
+    "build:renderer": "webpack --mode production",
+    "dev:renderer": "webpack --mode development --watch",
+    "dist:win": "npm run build:renderer && electron-builder --win nsis --x64",
+    "dist:portable": "npm run dist:win"
+  },
+  "build": {
+    "appId": "com.shiftstrong.app",
+    "productName": "ShiftStrong",
+    "artifactName": "${productName}-Setup-${version}.${ext}",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "index.html",
+      "main.js",
+      "preload.js",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/all_badge.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "ShiftStrong"
+    }
   },
   "dependencies": {
-    "dotenv": "^17.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^5.5.0",
@@ -28,7 +58,7 @@
     "concurrently": "^7.0.0",
     "css-loader": "^6.7.1",
     "electron": "^29.0.0",
-    "electron-packager": "^17.1.2",
+    "electron-builder": "^24.13.3",
     "file-loader": "^6.2.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.72.1",

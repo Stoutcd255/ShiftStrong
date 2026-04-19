@@ -1,4 +1,5 @@
-// You can expose any Node APIs to renderer here if needed
-window.addEventListener('DOMContentLoaded', () => {
-  // No-op for now, extend as needed!
+const { contextBridge } = require('electron');
+
+contextBridge.exposeInMainWorld('shiftStrong', {
+  version: '1.0.0',
 });
