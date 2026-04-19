@@ -1,14 +1,8 @@
 const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
 
-function isPackaged() {
-  return app.isPackaged;
-}
-
 function getHtmlPath() {
-  const htmlPath = isPackaged()
-    ? path.join(__dirname, 'index.html')
-    : path.join(__dirname, 'dist', 'index.html');
+  const htmlPath = path.join(__dirname, 'index.html');
   return htmlPath;
 }
 
