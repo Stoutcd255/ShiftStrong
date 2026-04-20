@@ -1,22 +1,11 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
-const fs = require('fs');
 
-function isPackaged() {
-  // When packaged, process.resourcesPath points to resources/
-  // App is unpacked in resources/app/
-  // __dirname is .../resources/app/
-  return app.isPackaged || process.mainModule.filename.indexOf('app.asar') !== -1 || __dirname.includes('app');
-}
+const SAFE_EXTERNAL_PROTOCOLS = new Set(['https:', 'http:']);
 
 function getHtmlPath() {
-  if (isPackaged()) {
-    // Packaged: index.html is at app root (resources/app/index.html)
-    return path.join(__dirname, 'index.html');
-  } else {
-    // Dev: load from dist/
-    return path.join(__dirname, 'dist', 'index.html');
-  }
+  const htmlPath = path.join(__dirname, 'index.html');
+  return htmlPath;
 }
 
 function createWindow () {
@@ -28,8 +17,28 @@ function createWindow () {
     icon: path.join(__dirname, 'assets', 'all_badge.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: false,
-      nodeIntegration: true
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+      webSecurity: true
+    }
+  });
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    try {
+      const parsed = new URL(url);
+      if (SAFE_EXTERNAL_PROTOCOLS.has(parsed.protocol)) {
+        shell.openExternal(url);
+      }
+    } catch {
+      // deny invalid external URL
+    }
+    return { action: 'deny' };
+  });
+
+  win.webContents.on('will-navigate', (event, url) => {
+    if (url !== win.webContents.getURL()) {
+      event.preventDefault();
     }
   });
 

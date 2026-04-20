@@ -1,0 +1,5 @@
+# Track large/binary visual assets via Git LFS to keep repo push-safe
+assets/*.png filter=lfs diff=lfs merge=lfs -text
+assets/*.jpg filter=lfs diff=lfs merge=lfs -text
+assets/*.jpeg filter=lfs diff=lfs merge=lfs -text
+assets/*.webp filter=lfs diff=lfs merge=lfs -text

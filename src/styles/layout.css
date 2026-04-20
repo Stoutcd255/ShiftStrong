@@ -1,0 +1,31 @@
+.app-shell {
+  width: min(1560px, 100%);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.neon-frame {
+  border: 1px solid rgba(200, 155, 60, 0.22);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent 18%);
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  margin-bottom: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(140deg, rgba(31, 42, 68, 0.92), rgba(14, 17, 23, 0.98)),
+    repeating-linear-gradient(60deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(-35deg, rgba(200, 155, 60, 0.04) 0 1px, transparent 1px 5px);
+  backdrop-filter: blur(4px);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(200, 155, 60, 0.18),
+    0 0 24px rgba(43, 111, 255, 0.12);
+}
